@@ -16,6 +16,18 @@ data = pd.read_csv("creditcard_sample.csv")
 st.title("Credit Card Fraud Detection App")
 st.write("Enter transaction details and detect if it is fraudulent.")
 
+st.subheader("Model Performance Summary (F1 Scores)")
+
+performance_data = {
+    "Logistic Regression": 0.0989,
+    "Random Forest": 0.8550,
+    "XGBoost": 0.6335
+}
+
+st.dataframe(
+    pd.DataFrame.from_dict(performance_data, orient="index", columns=["F1 Score"])
+)
+
 st.sidebar.title("Model Selection")
 model_choice = st.sidebar.selectbox(
     "Choose ML Model", 
@@ -46,6 +58,22 @@ if st.button("Predict Fraud"):
     input_data = np.array([time] + list(v_features) + [amount]).reshape(1, -1)
     input_scaled = scaler.transform(input_data)
     prediction = model.predict(input_scaled)[0]
+
+    if hasattr(model, "predict_proba"):
+        fraud_prob = model.predict_proba(input_scaled)[0][1]
+    else:
+        fraud_prob = float(prediction)
+    st.write(f"### Fraud Probability: **{fraud_prob*100:.2f}%**")
+
+    st.progress(float(fraud_prob))
+
+    if fraud_prob > 0.70:
+        st.error("High Risk Transaction")
+    elif fraud_prob > 0.40:
+        st.warning("Moderate Risk Transaction")
+    else:
+        st.success("Low Risk Transaction")
+            
 
     if prediction == 1:
         st.error(f"Fraud Detected! (Model: {model_choice})")
