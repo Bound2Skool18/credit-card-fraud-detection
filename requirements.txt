@@ -7,4 +7,5 @@ matplotlib
 seaborn
 xgboost
 imbalanced-learn
+xgboost==1.7.6
 
