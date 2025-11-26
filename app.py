@@ -11,7 +11,7 @@ xgb_model = joblib.load("xgb_fraud_model.pkl")
 
 scaler = joblib.load("scaler.pkl")
 
-data = pd.read_csv("creditcard.csv")
+data = pd.read_csv("creditcard_sample.csv")
 
 st.title("Credit Card Fraud Detection App")
 st.write("Enter transaction details and detect if it is fraudulent.")
